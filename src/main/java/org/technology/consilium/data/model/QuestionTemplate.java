@@ -1,6 +1,7 @@
 package org.technology.consilium.data.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -9,7 +10,8 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Data
-public class QuestionTemplate {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class QuestionTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,11 +20,9 @@ public class QuestionTemplate {
     @NotBlank
     private String query_;
 
-    @NonNull
-    private QuestionType questionType;
-
     private String category;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     private SurveyTemplate surveyTemplate;
 }

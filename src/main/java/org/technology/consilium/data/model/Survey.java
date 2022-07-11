@@ -1,5 +1,6 @@
 package org.technology.consilium.data.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class Survey {
     @NotBlank
     private String date;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     private SurveyTemplate survey;
 

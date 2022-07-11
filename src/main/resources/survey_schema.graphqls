@@ -35,11 +35,22 @@ type Survey {
     questions: [Question]
 }
 
-type Question {
+interface Question {
     query_: QuestionTemplate! # Query is a defined word
+}
+
+type NPSQuestion implements Question {
+    query_: NPSQuestionTemplate!
     score: Int
     comment: String
-    isYes: Boolean
+}
+
+type BinaryQuestion implements Question {
+    query_: BinaryQuestionTemplate!
+    isYes: Boolean!
+    yesQuestion: NPSQuestion
+    noQuestion: NPSQuestion
+
 }
 
 type SurveyTemplate {
@@ -47,11 +58,21 @@ type SurveyTemplate {
     surveysAdministered: [Survey]
 }
 
-type QuestionTemplate {
+interface QuestionTemplate {
     query_: String!
-    questionType: QuestionType
     category: String
-    #secondaryQuery: [String]
+}
+
+type NPSQuestionTemplate implements QuestionTemplate {
+    query_: String!
+    category: String
+}
+
+type BinaryQuestionTemplate implements QuestionTemplate {
+    query_: String!
+    category: String
+    yesQuestion: NPSQuestionTemplate
+    noQuestion: NPSQuestionTemplate
 }
 
 enum Gender {
@@ -70,9 +91,4 @@ enum State {
     WA,
     NT,
     CONFIDENTIAL
-}
-
-enum QuestionType {
-    NPS,
-    Binary
 }
