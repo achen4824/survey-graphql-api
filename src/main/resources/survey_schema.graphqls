@@ -1,0 +1,79 @@
+#
+# Schemas must have at least a query root type
+#
+schema {
+    query: Query
+}
+
+type Query {
+    surveyee: [Surveyee]
+}
+
+type Surveyee {
+    # Unique Identifier
+    uniqueId: String!
+    # User's name
+    name: String!
+    company: String!
+    email: String
+    mobile: String
+    surveys: [Survey]
+    state: State #Enum
+    gender: Gender!
+    ageRange: String!
+}
+
+type Surveyor {
+    name: String!
+    surveysAdministered: [Survey]
+}
+
+type Survey {
+    surveyee: Surveyee
+    date: String!
+    survey: SurveyTemplate
+    questions: [Question]
+}
+
+type Question {
+    query_: QuestionTemplate! # Query is a defined word
+    Score: Int
+    Comment: String
+    isYes: Boolean
+}
+
+type SurveyTemplate {
+    name: Survey
+    questions: [QuestionTemplate]
+    surveysAdministered: [Survey]
+}
+
+type QuestionTemplate {
+    query_: String!
+    questionType: QuestionType
+    category: String
+    secondaryQuery: [String]
+}
+
+enum Gender {
+    MALE,
+    FEMALE,
+    OTHER
+}
+enum State {
+    SA,
+    VIC,
+    ACT,
+    TAS,
+    NZ, # New Zealand apparently
+    NSW,
+    QLD,
+    WA,
+    NT,
+    CONFIDENTIAL
+}
+
+enum QuestionType {
+    NPS,
+    Binary
+}
