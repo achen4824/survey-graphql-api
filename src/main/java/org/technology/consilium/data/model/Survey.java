@@ -2,10 +2,7 @@ package org.technology.consilium.data.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -19,15 +16,21 @@ public class Survey {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Min(0)
-    private Long surveyee;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Surveyee surveyee;
 
     @NotBlank
     private String date;
 
-    @Min(0)
-    private Long survey;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SurveyTemplate survey;
 
-    private List<Long> questions  = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Surveyor surveyor;
+
+    @OneToMany(mappedBy = "survey",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Question> questions  = new ArrayList<>();
 
 }

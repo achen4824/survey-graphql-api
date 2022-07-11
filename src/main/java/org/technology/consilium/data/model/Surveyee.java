@@ -38,7 +38,10 @@ public class Surveyee {
     @NotBlank
     private String ageRange;
 
-    List<Long> surveyIds  = new ArrayList<>();
+    @OneToMany(mappedBy = "surveyee",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    List<Survey> surveys  = new ArrayList<>();
 
     Surveyee() {
         uniqueId = UUID.randomUUID();

@@ -2,10 +2,7 @@ package org.technology.consilium.data.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +17,10 @@ public class Surveyor {
 
     @NotBlank
     private String name;
-    private List<Long> surveysAdministered  = new ArrayList<>();
+
+    @OneToMany(mappedBy = "surveyor",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Survey> surveysAdministered  = new ArrayList<>();
 
 }

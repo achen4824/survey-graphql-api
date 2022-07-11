@@ -2,10 +2,7 @@ package org.technology.consilium.data.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +15,13 @@ public class SurveyTemplate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private List<Long> questions = new ArrayList<>();
-    private List<Long> surveysAdministered = new ArrayList<>();
+    @OneToMany(mappedBy = "surveyTemplate",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<QuestionTemplate> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "survey",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Survey> surveysAdministered = new ArrayList<>();
 }

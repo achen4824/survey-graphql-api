@@ -4,10 +4,7 @@ package org.technology.consilium.data.model;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -25,4 +22,7 @@ public class QuestionTemplate {
     private QuestionType questionType;
 
     private String category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SurveyTemplate surveyTemplate;
 }

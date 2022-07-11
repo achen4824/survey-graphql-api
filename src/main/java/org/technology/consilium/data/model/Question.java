@@ -3,10 +3,7 @@ package org.technology.consilium.data.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -18,8 +15,12 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Min(0)
-    private Long query_;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "question_template_id", referencedColumnName = "id")
+    private QuestionTemplate query_;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Survey survey;
 
     @Min(0)
     @Max(10)
