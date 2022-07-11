@@ -37,8 +37,8 @@ type Survey {
 
 type Question {
     query_: QuestionTemplate! # Query is a defined word
-    Score: Int
-    Comment: String
+    score: Int
+    comment: String
     isYes: Boolean
 }
 
@@ -52,7 +52,7 @@ type QuestionTemplate {
     query_: String!
     questionType: QuestionType
     category: String
-    secondaryQuery: [String]
+    #secondaryQuery: [String]
 }
 
 enum Gender {

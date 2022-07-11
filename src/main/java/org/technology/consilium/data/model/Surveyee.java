@@ -3,10 +3,9 @@ package org.technology.consilium.data.model;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +13,10 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Data
 public class Surveyee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     private UUID uniqueId;
 
@@ -35,10 +38,11 @@ public class Surveyee {
     @NotBlank
     private String ageRange;
 
-    List<Integer> surveyIds;
+    List<Long> surveyIds;
 
     Surveyee() {
         uniqueId = UUID.randomUUID();
+        surveyIds = new ArrayList<>();
     }
 
 }
