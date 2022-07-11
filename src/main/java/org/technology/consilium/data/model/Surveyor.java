@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,6 +20,6 @@ public class Surveyor {
 
     @NotBlank
     private String name;
-    private List<Long> surveysAdministered;
+    private List<Long> surveysAdministered  = new ArrayList<>();
 
 }

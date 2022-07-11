@@ -38,11 +38,10 @@ public class Surveyee {
     @NotBlank
     private String ageRange;
 
-    List<Long> surveyIds;
+    List<Long> surveyIds  = new ArrayList<>();
 
     Surveyee() {
         uniqueId = UUID.randomUUID();
-        surveyIds = new ArrayList<>();
     }
 
 }

@@ -6,28 +6,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
-public class Survey {
+public class SurveyTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Min(0)
-    private Long surveyee;
-
-    @NotBlank
-    private String date;
-
-    @Min(0)
-    private Long survey;
-
-    private List<Long> questions  = new ArrayList<>();
-
+    private List<Long> questions = new ArrayList<>();
+    private List<Long> surveysAdministered = new ArrayList<>();
 }
