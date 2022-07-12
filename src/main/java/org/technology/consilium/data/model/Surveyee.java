@@ -30,6 +30,10 @@ public class Surveyee {
 
     private String mobile;
 
+    private String officePhone;
+
+    private String contactName;
+
     private State state;
 
     @NonNull
@@ -43,7 +47,7 @@ public class Surveyee {
             orphanRemoval = true)
     List<Survey> surveys  = new ArrayList<>();
 
-    Surveyee() {
+    public Surveyee() {
         uniqueId = UUID.randomUUID();
     }
 

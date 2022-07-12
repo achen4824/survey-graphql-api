@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.google.guava:guava:26.0-jre'
     implementation 'com.graphql-java:graphql-java:18.2'
     implementation 'com.opencsv:opencsv:4.1'
+    implementation 'org.json:json:20220320'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'

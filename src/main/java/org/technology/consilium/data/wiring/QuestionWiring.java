@@ -31,6 +31,9 @@ public class QuestionWiring {
     @Getter
     public final RatingQuestionRepository ratingQuestionRepository;
 
+    @Getter
+    public final CommentQuestionRepository commentQuestionRepository;
+
 
     private Map<Class, CrudRepository> repos;
 
@@ -39,20 +42,23 @@ public class QuestionWiring {
                           NPSQuestionRepository npsQuestionRepository,
                           MultipleAnswerQuestionRepository multipleAnswerQuestionRepository,
                           NumberQuestionRepository numberQuestionRepository,
-                          RatingQuestionRepository ratingQuestionRepository) {
+                          RatingQuestionRepository ratingQuestionRepository,
+                          CommentQuestionRepository commentQuestionRepository) {
 
         this.binaryQuestionRepository = binaryQuestionRepository;
         this.npsQuestionRepository = npsQuestionRepository;
         this.multipleAnswerQuestionRepository = multipleAnswerQuestionRepository;
         this.numberQuestionRepository = numberQuestionRepository;
         this.ratingQuestionRepository = ratingQuestionRepository;
+        this.commentQuestionRepository = commentQuestionRepository;
 
         repos = Map.of(
                 BinaryQuestion.class, binaryQuestionRepository,
                 NPSQuestion.class, npsQuestionRepository,
                 MultipleAnswerQuestion.class, multipleAnswerQuestionRepository,
                 NumberQuestion.class, numberQuestionRepository,
-                RatingQuestion.class, ratingQuestionRepository
+                RatingQuestion.class, ratingQuestionRepository,
+                CommentQuestion.class, commentQuestionRepository
         );
     }
 

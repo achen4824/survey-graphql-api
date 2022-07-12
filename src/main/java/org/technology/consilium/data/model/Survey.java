@@ -17,20 +17,20 @@ public class Survey {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     private Surveyee surveyee;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
+    private Surveyor surveyor;
 
     @NotBlank
     private String date;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
     private SurveyTemplate survey;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Surveyor surveyor;
-
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, cascade=CascadeType.ALL)
     private List<Question> questions  = new ArrayList<>();
 
 }

@@ -17,6 +17,8 @@ type Surveyee {
     company: String!
     email: String
     mobile: String
+    officePhone: String
+    contactName: String
     surveys: [Survey]
     state: State #Enum
     gender: Gender!
@@ -38,11 +40,13 @@ type Survey {
 interface Question {
     queryString: String!
     category: String
+    questionType: String!
 }
 
 type MultipleAnswerQuestion implements Question{
     queryString: String!
     category: String
+    questionType: String!
     values: [String]
     subQuestions: [Question]
 }
@@ -50,18 +54,21 @@ type MultipleAnswerQuestion implements Question{
 type CommentQuestion implements Question{
     queryString: String!
     category: String
+    questionType: String!
     comment: String
 }
 
 type NumberQuestion implements Question{
     queryString: String!
     category: String
+    questionType: String!
     value: Int
 }
 
 type NPSQuestion implements Question {
     queryString: String!
     category: String
+    questionType: String!
     score: Int
     comment: String
 }
@@ -69,6 +76,7 @@ type NPSQuestion implements Question {
 type BinaryQuestion implements Question {
     queryString: String!
     category: String
+    questionType: String!
     isYes: Boolean
     yesQuestion: [Question]
     noQuestion: [Question]
@@ -77,6 +85,7 @@ type BinaryQuestion implements Question {
 type RatingQuestion implements Question {
     queryString: String!
     category: String
+    questionType: String!
     score: Int
     goodQuestion: Question
     neutralQuestion: Question

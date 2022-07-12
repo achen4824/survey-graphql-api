@@ -1,25 +1,80 @@
 package org.technology.consilium.data.model.questions;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
-import org.technology.consilium.data.model.Survey;
-import org.technology.consilium.data.model.SurveyTemplate;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
+@Slf4j
 @Entity
 @Data
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Question {
+public abstract class Question{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    protected Long id;
 
-    private String queryString;
+    @Column(columnDefinition = "TEXT")
+    protected String queryString;
 
-    private String category;
+    protected String category;
 
-    private String questionType;
+    protected QuestionType questionType;
+
+    public void fromJSON(JSONObject object) {
+        try {
+            this.queryString = object.getString("queryString");
+            this.category = object.getString("category");
+        }catch (JSONException e){
+            log.error("All questions must contain both 'queryString', 'category', and 'questionType' keys");
+        }
+
+    }
+
+    public static List<Question> getQuestionsFromJSONArray(JSONArray array) {
+        if(Objects.nonNull(array)) {
+            List<Question> questionList = new ArrayList<>();
+            for(int i = 0; i < array.length(); i++){
+                Question question =
+                        QuestionType.KEY_BUILDER.get(QuestionType.valueOf(array.getJSONObject(i).getString("questionType")))
+                            .apply(array.getJSONObject(i));
+                questionList.add(question);
+            }
+            return questionList;
+        }else{
+            return new ArrayList<>();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Question> T cast(Class<T> tClass){
+        try {
+            return (T) this;
+        }catch (ClassCastException e){
+            log.error("Attempted to cast to incorrect class wanted: " + tClass.getSimpleName() + "\tactually: " + this.getClass().getSimpleName());
+            System.exit(1);
+        }
+        return null;
+    }
+
+    public void resetId(){
+        id = null;
+    }
+
+    protected void copyValues(Question question) {
+        this.queryString = question.getQueryString();
+        this.category = question.category;
+        this.questionType = question.questionType;
+    }
+
+    public abstract Question clone();
+
 }
