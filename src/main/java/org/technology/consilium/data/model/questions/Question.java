@@ -22,9 +22,7 @@ public abstract class Question{
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "question_data_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     protected QuestionData questionData;
 
     protected QuestionType questionType;

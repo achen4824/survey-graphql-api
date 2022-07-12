@@ -2,6 +2,8 @@ package org.technology.consilium.data.wiring;
 
 
 import graphql.schema.DataFetcher;
+import graphql.schema.GraphQLObjectType;
+import graphql.schema.TypeResolver;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
@@ -72,6 +74,13 @@ public class QuestionWiring {
     }
 
     // Question fields
+    public TypeResolver questionTypeResolver = environment -> {
+        Question question = environment.getObject();
+
+        // Ensure that the class names line up with the GraphQL type names
+        return (GraphQLObjectType) environment.getSchema().getType(question.getClass().getSimpleName());
+    };
+
     public DataFetcher<QuestionData> questionDataDataFetcher = environment -> {
         Question question = environment.getSource();
         return question.getQuestionData();

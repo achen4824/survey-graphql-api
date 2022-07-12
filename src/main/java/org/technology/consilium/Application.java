@@ -7,6 +7,10 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import graphql.com.google.common.base.Charsets;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,11 +18,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.technology.consilium.data.model.*;
 import org.technology.consilium.data.model.questions.*;
-import org.technology.consilium.data.repositories.SurveyRepository;
-import org.technology.consilium.data.repositories.SurveyTemplateRepository;
-import org.technology.consilium.data.repositories.SurveyeeRepository;
-import org.technology.consilium.data.repositories.SurveyorRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -29,20 +31,10 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
-//    @Autowired
-//    private Validator validator;
-
     @Autowired
-    SurveyorRepository surveyorRepository;
+    EntityManagerFactory factory;
 
-    @Autowired
-    SurveyeeRepository surveyeeRepository;
-
-    @Autowired
-    SurveyTemplateRepository surveyTemplateRepository;
-
-    @Autowired
-    SurveyRepository surveyRepository;
+    Session session;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -51,9 +43,32 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        List<SurveyTemplate> surveyTemplates = getSurveys();
-        surveyTemplateRepository.saveAll(surveyTemplates);
-        loadSurveyResponses(surveyTemplates.get(0));
+        SessionFactory hibernateFactory;
+        if(factory.unwrap(SessionFactory.class) == null){
+            throw new NullPointerException("factory is not a hibernate factory");
+        }
+        hibernateFactory = factory.unwrap(SessionFactory.class);
+        session = hibernateFactory.openSession();
+
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+
+            // Load Excel to Database here
+            List<SurveyTemplate> surveyTemplates = getSurveys();
+            surveyTemplates.forEach(session::saveOrUpdate); // Need to use saveOrUpdate due to complexity of system see: hibernate lifecycle
+            loadSurveyResponses(surveyTemplates.get(0));
+
+            tx.commit();
+        }catch (Exception e) {
+            if (tx!=null) tx.rollback();
+            throw e;
+        }
+        finally {
+            session.close();
+        }
+
+
     }
 
     public List<SurveyTemplate> getSurveys() throws IOException {
@@ -90,7 +105,8 @@ public class Application implements CommandLineRunner {
                 if(!surveyorMap.containsKey(surveyorName)) {
                     Surveyor surveyor = new Surveyor();
                     surveyor.setName(surveyorName);
-                    surveyorMap.put(surveyorName, surveyorRepository.save(surveyor));
+                    session.saveOrUpdate(surveyor);
+                    surveyorMap.put(surveyorName, surveyor);
                 }
 
                 // Create all surveyees
@@ -111,7 +127,8 @@ public class Application implements CommandLineRunner {
                     Gender gender = (arr[47].equals("M")) ? Gender.MALE : Gender.FEMALE;
                     surveyee.setGender(gender);
                     surveyee.setAgeRange(arr[48]);
-                    surveyeeMap.put(surveyeeName, surveyeeRepository.save(surveyee));
+                    session.saveOrUpdate(surveyee);
+                    surveyeeMap.put(surveyeeName, surveyee);
                 }
             });
 
@@ -236,11 +253,8 @@ public class Application implements CommandLineRunner {
                 survey.setSurveyor(surveyorMap.get(arr[1]));
                 survey.setDate(arr[49]);
 
-                surveyRepository.save(survey);
+                session.saveOrUpdate(survey);
             });
-
-
-
         }catch(IOException e){
             e.printStackTrace();
             log.error("File not found/unable to access at: " + filePath + " continuing...");
