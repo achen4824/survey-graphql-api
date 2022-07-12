@@ -3,12 +3,11 @@ package org.technology.consilium.data.wiring;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.technology.consilium.data.model.QuestionTemplate;
 import org.technology.consilium.data.model.Survey;
 import org.technology.consilium.data.model.SurveyTemplate;
+import org.technology.consilium.data.model.questions.Question;
 import org.technology.consilium.data.repositories.SurveyTemplateRepository;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class SurveyTemplateWiring {
         return surveyTemplates;
     };
 
-    public DataFetcher<List<QuestionTemplate>> questionsDataFetcher = environment -> {
+    public DataFetcher<List<Question>> questionsDataFetcher = environment -> {
         SurveyTemplate surveyTemplate = environment.getSource();
         return surveyTemplate.getQuestions();
     };

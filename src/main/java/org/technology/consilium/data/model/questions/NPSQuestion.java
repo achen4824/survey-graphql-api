@@ -1,5 +1,6 @@
-package org.technology.consilium.data.model;
+package org.technology.consilium.data.model.questions;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,21 +12,12 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Entity
+@Data
 public class NPSQuestion extends Question{
 
-    @Getter
-    @Setter
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "question_template_id", referencedColumnName = "id")
-    private NPSQuestionTemplate query_;
-
-    @Getter
-    @Setter
     @Min(0)
     @Max(10)
     private Integer score;
 
-    @Getter
-    @Setter
     private String comment;
 }

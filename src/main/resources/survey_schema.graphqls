@@ -36,43 +36,56 @@ type Survey {
 }
 
 interface Question {
-    query_: QuestionTemplate! # Query is a defined word
+    queryString: String!
+    category: String
+}
+
+type MultipleAnswerQuestion implements Question{
+    queryString: String!
+    category: String
+    values: [String]
+    subQuestions: [Question]
+}
+
+type CommentQuestion implements Question{
+    queryString: String!
+    category: String
+    comment: String
+}
+
+type NumberQuestion implements Question{
+    queryString: String!
+    category: String
+    value: Int
 }
 
 type NPSQuestion implements Question {
-    query_: NPSQuestionTemplate!
+    queryString: String!
+    category: String
     score: Int
     comment: String
 }
 
 type BinaryQuestion implements Question {
-    query_: BinaryQuestionTemplate!
-    isYes: Boolean!
-    yesQuestion: NPSQuestion
-    noQuestion: NPSQuestion
+    queryString: String!
+    category: String
+    isYes: Boolean
+    yesQuestion: [Question]
+    noQuestion: [Question]
+}
 
+type RatingQuestion implements Question {
+    queryString: String!
+    category: String
+    score: Int
+    goodQuestion: Question
+    neutralQuestion: Question
+    improvementQuestion: Question
 }
 
 type SurveyTemplate {
-    questions: [QuestionTemplate]
+    questions: [Question]
     surveysAdministered: [Survey]
-}
-
-interface QuestionTemplate {
-    query_: String!
-    category: String
-}
-
-type NPSQuestionTemplate implements QuestionTemplate {
-    query_: String!
-    category: String
-}
-
-type BinaryQuestionTemplate implements QuestionTemplate {
-    query_: String!
-    category: String
-    yesQuestion: NPSQuestionTemplate
-    noQuestion: NPSQuestionTemplate
 }
 
 enum Gender {

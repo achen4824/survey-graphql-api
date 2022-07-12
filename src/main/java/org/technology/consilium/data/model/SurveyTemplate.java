@@ -1,11 +1,11 @@
 package org.technology.consilium.data.model;
 
 import lombok.Data;
+import org.technology.consilium.data.model.questions.Question;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -15,10 +15,8 @@ public class SurveyTemplate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "surveyTemplate",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private List<QuestionTemplate> questions = new ArrayList<>();
+    @OneToMany(orphanRemoval = true)
+    private List<Question> questions = new ArrayList<>();
 
     @OneToMany(mappedBy = "survey",
             cascade = CascadeType.ALL,

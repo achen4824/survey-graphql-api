@@ -6,11 +6,8 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
-import org.technology.consilium.data.model.*;
-import org.technology.consilium.data.repositories.BinaryQuestionRepository;
-import org.technology.consilium.data.repositories.BinaryQuestionTemplateRepository;
-import org.technology.consilium.data.repositories.NPSQuestionRepository;
-import org.technology.consilium.data.repositories.NPSQuestionTemplateRepository;
+import org.technology.consilium.data.model.questions.*;
+import org.technology.consilium.data.repositories.questions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,32 +20,39 @@ public class QuestionWiring {
     public final BinaryQuestionRepository binaryQuestionRepository;
 
     @Getter
-    public final BinaryQuestionTemplateRepository binaryQuestionTemplateRepository;
-
-    @Getter
     public final NPSQuestionRepository npsQuestionRepository;
 
     @Getter
-    public final NPSQuestionTemplateRepository npsQuestionTemplateRepository;
+    public final MultipleAnswerQuestionRepository multipleAnswerQuestionRepository;
+
+    @Getter
+    public final NumberQuestionRepository numberQuestionRepository;
+
+    @Getter
+    public final RatingQuestionRepository ratingQuestionRepository;
+
 
     private Map<Class, CrudRepository> repos;
 
     @Autowired
     public QuestionWiring(BinaryQuestionRepository binaryQuestionRepository,
-                          BinaryQuestionTemplateRepository binaryQuestionTemplateRepository,
                           NPSQuestionRepository npsQuestionRepository,
-                          NPSQuestionTemplateRepository npsQuestionTemplateRepository) {
+                          MultipleAnswerQuestionRepository multipleAnswerQuestionRepository,
+                          NumberQuestionRepository numberQuestionRepository,
+                          RatingQuestionRepository ratingQuestionRepository) {
 
         this.binaryQuestionRepository = binaryQuestionRepository;
-        this.binaryQuestionTemplateRepository = binaryQuestionTemplateRepository;
         this.npsQuestionRepository = npsQuestionRepository;
-        this.npsQuestionTemplateRepository = npsQuestionTemplateRepository;
+        this.multipleAnswerQuestionRepository = multipleAnswerQuestionRepository;
+        this.numberQuestionRepository = numberQuestionRepository;
+        this.ratingQuestionRepository = ratingQuestionRepository;
 
         repos = Map.of(
-                    BinaryQuestion.class, binaryQuestionRepository,
-                    BinaryQuestionTemplate.class, binaryQuestionTemplateRepository,
-                    NPSQuestion.class, npsQuestionRepository,
-                    NPSQuestionTemplate.class, npsQuestionTemplateRepository
+                BinaryQuestion.class, binaryQuestionRepository,
+                NPSQuestion.class, npsQuestionRepository,
+                MultipleAnswerQuestion.class, multipleAnswerQuestionRepository,
+                NumberQuestion.class, numberQuestionRepository,
+                RatingQuestion.class, ratingQuestionRepository
         );
     }
 
@@ -61,23 +65,38 @@ public class QuestionWiring {
         };
     }
 
-    public DataFetcher<NPSQuestionTemplate> templateDataFetcher = environment -> {
-        NPSQuestion question = environment.getSource();
-        return question.getQuery_();
-    };
 
-    public DataFetcher<BinaryQuestionTemplate> binaryTemplateDataFetcher = environment -> {
-        BinaryQuestion question = environment.getSource();
-        return question.getQuery_();
-    };
-
-    public DataFetcher<NPSQuestion> yesQuestionDataFetcher = environment -> {
+    // Binary Question fields
+    public DataFetcher<List<Question>> yesQuestionDataFetcher = environment -> {
         BinaryQuestion question = environment.getSource();
         return question.getYesQuestion();
     };
 
-    public DataFetcher<NPSQuestion> noQuestionDataFetcher = environment -> {
+    public DataFetcher<List<Question>> noQuestionDataFetcher = environment -> {
         BinaryQuestion question = environment.getSource();
         return question.getNoQuestion();
+    };
+
+
+    // Rating Question
+    public DataFetcher<Question> goodQuestionDataFetcher = environment -> {
+        RatingQuestion question =  environment.getSource();
+        return question.getGoodQuestion();
+    };
+
+    public DataFetcher<Question> neutralQuestionDataFetcher = environment -> {
+        RatingQuestion question =  environment.getSource();
+        return question.getNeutralQuestion();
+    };
+
+    public DataFetcher<Question> improvementQuestionDataFetcher = environment -> {
+        RatingQuestion question =  environment.getSource();
+        return question.getImprovementQuestion();
+    };
+
+    // Multiple Answer Question
+    public DataFetcher<List<Question>> subQuestionDataFetcher = environment -> {
+        MultipleAnswerQuestion question = environment.getSource();
+        return question.getSubQuestions();
     };
 }

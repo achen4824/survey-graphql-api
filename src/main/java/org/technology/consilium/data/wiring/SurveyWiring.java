@@ -3,12 +3,11 @@ package org.technology.consilium.data.wiring;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.technology.consilium.data.model.Question;
+import org.technology.consilium.data.model.questions.Question;
 import org.technology.consilium.data.model.Survey;
 import org.technology.consilium.data.model.SurveyTemplate;
 import org.technology.consilium.data.model.Surveyee;
 import org.technology.consilium.data.repositories.SurveyRepository;
-import org.technology.consilium.data.repositories.SurveyeeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
