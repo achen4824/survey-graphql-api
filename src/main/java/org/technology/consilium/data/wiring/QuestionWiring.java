@@ -71,6 +71,12 @@ public class QuestionWiring {
         };
     }
 
+    // Question fields
+    public DataFetcher<QuestionData> questionDataDataFetcher = environment -> {
+        Question question = environment.getSource();
+        return question.getQuestionData();
+    };
+
 
     // Binary Question fields
     public DataFetcher<List<Question>> yesQuestionDataFetcher = environment -> {

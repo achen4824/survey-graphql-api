@@ -22,17 +22,17 @@ public abstract class Question{
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    @Column(columnDefinition = "TEXT")
-    protected String queryString;
 
-    protected String category;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "question_data_id", referencedColumnName = "id")
+    protected QuestionData questionData;
 
     protected QuestionType questionType;
 
     public void fromJSON(JSONObject object) {
         try {
-            this.queryString = object.getString("queryString");
-            this.category = object.getString("category");
+            // In future add check to see if the question already exists in the database
+            questionData = new QuestionData(object.getString("queryString"), object.getString("category"));
         }catch (JSONException e){
             log.error("All questions must contain both 'queryString', 'category', and 'questionType' keys");
         }
@@ -70,8 +70,7 @@ public abstract class Question{
     }
 
     protected void copyValues(Question question) {
-        this.queryString = question.getQueryString();
-        this.category = question.category;
+        this.questionData = question.questionData;  // Don't clone questionData so that there is no duplicate information
         this.questionType = question.questionType;
     }
 
