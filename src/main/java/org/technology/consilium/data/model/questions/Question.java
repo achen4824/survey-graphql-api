@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Entity
@@ -21,6 +22,9 @@ public abstract class Question{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
+
+    @Transient
+    protected UUID nextQuestion;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     protected QuestionData questionData;
@@ -71,6 +75,8 @@ public abstract class Question{
         this.questionData = question.questionData;  // Don't clone questionData so that there is no duplicate information
         this.questionType = question.questionType;
     }
+
+    public abstract List<Question> flatten(Question nextQuestion);
 
     public abstract Question clone();
 

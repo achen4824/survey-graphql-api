@@ -4,13 +4,13 @@ import lombok.Data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -24,6 +24,8 @@ public class RatingQuestion extends Question{
     @JoinColumn(name = "good_question_id", referencedColumnName = "id")
     private Question goodQuestion;
 
+
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "neutral_question_id", referencedColumnName = "id")
     private Question neutralQuestion;
@@ -31,6 +33,13 @@ public class RatingQuestion extends Question{
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "improvement_question_id", referencedColumnName = "id")
     private Question improvementQuestion;
+
+    @Transient
+    private UUID goodNextQuestion;
+    @Transient
+    private UUID neutralNextQuestion;
+    @Transient
+    private UUID improvementNextQuestion;
 
     public RatingQuestion() {
         questionType = QuestionType.RATING;
@@ -65,6 +74,29 @@ public class RatingQuestion extends Question{
             neutralQuestion.resetId();
         if(Objects.nonNull(improvementQuestion))
             improvementQuestion.resetId();
+    }
+
+    @Override
+    public List<Question> flatten(Question nextQuestion) {
+        List<Question> questionList = new ArrayList<>();
+        this.nextQuestion = nextQuestion.getQuestionData().getUniqueID();
+        questionList.add(this);
+
+        goodNextQuestion = verifyNextQuestion(goodQuestion, questionList, nextQuestion);
+        neutralNextQuestion = verifyNextQuestion(neutralQuestion, questionList, nextQuestion);
+        improvementNextQuestion = verifyNextQuestion(improvementQuestion, questionList, nextQuestion);
+
+        return questionList;
+    }
+
+    private UUID verifyNextQuestion(Question fieldQuestion, List<Question> questionList, Question nextQuestion){
+        if (Objects.isNull(fieldQuestion)) {
+            return this.nextQuestion;
+        }else {
+            questionList.addAll(fieldQuestion.flatten(nextQuestion));
+            return fieldQuestion.getQuestionData().getUniqueID();
+        }
+
     }
 
     @Override

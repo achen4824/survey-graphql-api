@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -38,6 +40,14 @@ public class NPSQuestion extends Question{
         }catch(NumberFormatException ignored) {
 
         }
+    }
+
+    @Override
+    public List<Question> flatten(Question nextQuestion) {
+        List<Question> questionList = new ArrayList<>();
+        this.nextQuestion = nextQuestion.getQuestionData().getUniqueID();
+        questionList.add(this);
+        return questionList;
     }
 
     @Override

@@ -10,10 +10,10 @@ import org.technology.consilium.data.model.Survey;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
-@NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class QuestionData {
 
@@ -21,12 +21,19 @@ public class QuestionData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
+    protected UUID uniqueID;
+
     @Column(columnDefinition = "TEXT")
     protected String queryString;
 
     protected String category;
 
+    public QuestionData() {
+        uniqueID = UUID.randomUUID();
+    }
+
     public QuestionData(String queryString, String category) {
+        this();
         this.queryString = queryString;
         this.category = category;
     }

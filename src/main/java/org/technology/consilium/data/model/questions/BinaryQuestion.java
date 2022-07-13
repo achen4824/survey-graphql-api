@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
@@ -17,9 +18,15 @@ public class BinaryQuestion extends Question {
     @OneToMany(orphanRemoval = true, cascade=CascadeType.ALL)
     private List<Question> yesQuestion;
 
+    @Transient
+    private UUID yesNextQuestion;
+
 
     @OneToMany(orphanRemoval = true, cascade=CascadeType.ALL)
     private List<Question> noQuestion;
+
+    @Transient
+    private UUID noNextQuestion;
 
     public BinaryQuestion() {
         super();
@@ -50,6 +57,33 @@ public class BinaryQuestion extends Question {
         super.resetId();
         yesQuestion.forEach(Question::resetId);
         noQuestion.forEach(Question::resetId);
+    }
+
+    @Override
+    public List<Question> flatten(Question nextQuestion) {
+        this.nextQuestion = nextQuestion.getQuestionData().getUniqueID();
+        List<Question> questionList = new ArrayList<>();
+        questionList.add(this);
+        if(yesQuestion.size() == 0){
+            this.yesNextQuestion = this.nextQuestion;
+        }else {
+            this.yesNextQuestion = yesQuestion.get(0).getQuestionData().getUniqueID();
+            for (int i = 0; i < yesQuestion.size() - 1; i++) {
+                questionList.addAll(yesQuestion.get(i).flatten(yesQuestion.get(i + 1)));
+            }
+            questionList.addAll(yesQuestion.get(yesQuestion.size() - 1).flatten(nextQuestion));
+        }
+
+        if(noQuestion.size() == 0){
+            this.noNextQuestion = this.nextQuestion;
+        }else {
+            this.noNextQuestion = noQuestion.get(0).getQuestionData().getUniqueID();
+            for (int i = 0; i < noQuestion.size() - 1; i++) {
+                questionList.addAll(noQuestion.get(i).flatten(noQuestion.get(i + 1)));
+            }
+            questionList.addAll(noQuestion.get(noQuestion.size() - 1).flatten(nextQuestion));
+        }
+        return questionList;
     }
 
     @Override

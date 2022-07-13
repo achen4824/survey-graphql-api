@@ -49,6 +49,21 @@ public class MultipleAnswerQuestion extends Question{
     }
 
     @Override
+    public List<Question> flatten(Question nextQuestion) {
+        this.nextQuestion = nextQuestion.getQuestionData().getUniqueID();
+        List<Question> questionList = new ArrayList<>();
+        questionList.add(this);
+        if(subQuestions.size() != 0) {
+            this.nextQuestion = subQuestions.get(0).getQuestionData().getUniqueID();
+            for (int i = 0; i < subQuestions.size() - 1; i++) {
+                questionList.addAll(subQuestions.get(i).flatten(subQuestions.get(i + 1)));
+            }
+            questionList.addAll(subQuestions.get(subQuestions.size() - 1).flatten(nextQuestion));
+        }
+        return questionList;
+    }
+
+    @Override
     public Question clone() {
         MultipleAnswerQuestion multipleAnswerQuestionClone = new MultipleAnswerQuestion();
         multipleAnswerQuestionClone.copyValues(this);

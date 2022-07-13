@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,6 +24,14 @@ public class CommentQuestion extends Question{
         commentQuestion.fromJSON(object);
         commentQuestion.comment = object.has("comment") ? object.getString("comment") : null;
         return commentQuestion;
+    }
+
+    @Override
+    public List<Question> flatten(Question nextQuestion) {
+        List<Question> questionList = new ArrayList<>();
+        this.nextQuestion = nextQuestion.getQuestionData().getUniqueID();
+        questionList.add(this);
+        return questionList;
     }
 
     @Override

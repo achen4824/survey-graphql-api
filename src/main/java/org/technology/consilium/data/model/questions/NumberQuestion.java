@@ -4,6 +4,8 @@ import lombok.Data;
 import org.json.JSONObject;
 
 import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -28,6 +30,14 @@ public class NumberQuestion extends Question{
         }catch(NumberFormatException ignored) {
 
         }
+    }
+
+    @Override
+    public List<Question> flatten(Question nextQuestion) {
+        List<Question> questionList = new ArrayList<>();
+        this.nextQuestion = nextQuestion.getQuestionData().getUniqueID();
+        questionList.add(this);
+        return questionList;
     }
 
     @Override

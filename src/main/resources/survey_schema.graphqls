@@ -42,6 +42,7 @@ type Survey {
 }
 
 type QuestionData {
+    uniqueID: ID!
     queryString: String!
     category: String
 }
@@ -49,30 +50,38 @@ type QuestionData {
 interface Question {
     questionData: QuestionData!
     questionType: String!
+    nextQuestion: ID
 }
 
 type MultipleAnswerQuestion implements Question{
     questionData: QuestionData!
     questionType: String!
+    nextQuestion: ID
+
     values: [String]
-    subQuestions: [Question]
 }
 
 type CommentQuestion implements Question{
     questionData: QuestionData!
     questionType: String!
+    nextQuestion: ID
+
     comment: String
 }
 
 type NumberQuestion implements Question{
     questionData: QuestionData!
     questionType: String!
+    nextQuestion: ID
+
     value: Int
 }
 
 type NPSQuestion implements Question {
     questionData: QuestionData!
     questionType: String!
+    nextQuestion: ID
+
     score: Int
     comment: String
 }
@@ -80,18 +89,22 @@ type NPSQuestion implements Question {
 type BinaryQuestion implements Question {
     questionData: QuestionData!
     questionType: String!
+    nextQuestion: ID
+
     isYes: Boolean
-    yesQuestion: [Question]
-    noQuestion: [Question]
+    yesNextQuestion: ID
+    noNextQuestion: ID
 }
 
 type RatingQuestion implements Question {
     questionData: QuestionData!
     questionType: String!
+    nextQuestion: ID
+
     score: Int
-    goodQuestion: Question
-    neutralQuestion: Question
-    improvementQuestion: Question
+    goodNextQuestion: ID
+    neutralNextQuestion: ID
+    improvementNextQuestion: ID
 }
 
 type SurveyTemplate {
