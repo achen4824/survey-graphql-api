@@ -13,6 +13,8 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.technology.consilium.data.model.questions.Question;
+import org.technology.consilium.data.model.questions.QuestionData;
 import org.technology.consilium.data.wiring.*;
 
 import javax.annotation.PostConstruct;
@@ -71,7 +73,11 @@ public class GraphQLProvider {
     private RuntimeWiring buildWiring() {
         return RuntimeWiring.newRuntimeWiring()
                 .type(newTypeWiring("Query")
-                        .dataFetcher("surveyee", surveyeeWiring.surveyeeDataFetcher)
+                        .dataFetcher("surveyees", surveyeeWiring.surveyeeDataFetcher)
+                        .dataFetcher("surveyors", surveyorWiring.surveyorDataFetcher)
+                        .dataFetcher("surveys", surveyWiring.surveyDataFetcher)
+                        .dataFetcher("questionDatas", questionWiring.questionFetcher(QuestionData.class))
+                        .dataFetcher("surveyTemplates", surveyTemplateWiring.surveyTemplateDataFetcher)
                 )
                 .type(newTypeWiring("Surveyee")
                         .dataFetcher("surveys", surveyeeWiring.surveysDataFetcher)

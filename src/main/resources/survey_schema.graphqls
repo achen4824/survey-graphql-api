@@ -6,7 +6,11 @@ schema {
 }
 
 type Query {
-    surveyee: [Surveyee]
+    surveyees: [Surveyee]
+    surveyors: [Surveyor]
+    surveys: [Survey]
+    questionDatas: [QuestionData]
+    surveyTemplates: [SurveyTemplate]
 }
 
 type Surveyee {

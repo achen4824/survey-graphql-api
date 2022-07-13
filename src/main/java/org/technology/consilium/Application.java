@@ -68,6 +68,7 @@ public class Application implements CommandLineRunner {
             session.close();
         }
 
+        log.info("Loaded data...");
 
     }
 
@@ -246,14 +247,17 @@ public class Application implements CommandLineRunner {
                 }
 
                 Survey survey = new Survey();
-                survey.setSurvey(surveyTemplate);
+//                survey.setSurvey(surveyTemplate);
                 survey.setQuestions(questions);
                 String surveyeeName = !arr[3].equals("CONFIDENTIAL") ? arr[3] : arr[0];
                 survey.setSurveyee(surveyeeMap.get(surveyeeName));
                 survey.setSurveyor(surveyorMap.get(arr[1]));
                 survey.setDate(arr[49]);
 
-                session.saveOrUpdate(survey);
+                surveyTemplate.getSurveysAdministered().add(survey);
+
+//                session.saveOrUpdate(survey);
+                session.saveOrUpdate(surveyTemplate);
             });
         }catch(IOException e){
             e.printStackTrace();

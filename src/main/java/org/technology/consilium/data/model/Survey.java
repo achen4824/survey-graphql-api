@@ -2,6 +2,7 @@ package org.technology.consilium.data.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.technology.consilium.data.model.questions.Question;
 
 import javax.persistence.*;

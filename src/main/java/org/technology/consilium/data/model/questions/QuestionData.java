@@ -1,6 +1,7 @@
 package org.technology.consilium.data.model.questions;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class QuestionData {
 
     @Id
@@ -23,10 +25,6 @@ public class QuestionData {
     protected String queryString;
 
     protected String category;
-
-    public Long getId() {
-        return (long) (queryString.hashCode() + category.hashCode());
-    }
 
     public QuestionData(String queryString, String category) {
         this.queryString = queryString;
