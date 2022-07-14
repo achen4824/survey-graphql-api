@@ -6,6 +6,7 @@ import com.google.common.io.Resources;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import graphql.com.google.common.base.Charsets;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,7 +24,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,7 +92,14 @@ public class Application implements CommandLineRunner {
     }
 
     public void loadSurveyResponses(SurveyTemplate surveyTemplate)  {
-        String filePath = "C:\\Users\\Andrew Chen\\IdeaProjects\\SurveyGraphql\\src\\main\\resources\\example_project_responses.csv";
+        URL resource = getClass().getClassLoader().getResource("example_project_responses.csv");
+        String filePath = null;
+        try {
+            assert resource != null;
+            filePath = Paths.get(resource.toURI()).toFile().getAbsolutePath();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
         try{
             log.info("Reading from file: " + filePath);
             CSVReader csvReader = new CSVReaderBuilder(new FileReader(filePath)).withSkipLines(8).build();
